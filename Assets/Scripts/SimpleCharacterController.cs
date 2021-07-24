@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using UnityEditor.SearchService;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class SimpleCharacterController : MonoBehaviour
 {
     private Rigidbody rb;
@@ -51,6 +52,11 @@ public class SimpleCharacterController : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+        }
+
+        if (other.gameObject.CompareTag("Water"))
+        {
+            SceneManager.LoadScene(0);
         }
     }
 
