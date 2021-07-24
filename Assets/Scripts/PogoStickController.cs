@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PogoStickController : MonoBehaviour
 {
@@ -39,6 +40,11 @@ public class PogoStickController : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+        }
+        
+        if (other.gameObject.CompareTag("Water"))
+        {
+            SceneManager.LoadScene(0);
         }
     }
     
