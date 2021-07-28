@@ -1648,6 +1648,7 @@ MonoBehaviour:
   jumpForce: 50
   speed: 5
   turnSpeed: 40
+  slingForce: 200
   spring: {fileID: 1232576794}
   upperBody: {fileID: 0}
   playerCamera: {fileID: 0}
@@ -1857,6 +1858,7 @@ MonoBehaviour:
   jumpForce: 100
   speed: 5
   turnSpeed: 40
+  slingForce: 150
   spring: {fileID: 5131003483049309606}
   upperBody: {fileID: 1873401591}
   playerCamera: {fileID: 1633022998}
@@ -3414,6 +3416,7 @@ MonoBehaviour:
   jumpForce: 300
   speed: 5
   turnSpeed: 40
+  slingForce: 200
   spring: {fileID: 0}
   upperBody: {fileID: 0}
   playerCamera: {fileID: 0}
