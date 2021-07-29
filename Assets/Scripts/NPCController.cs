@@ -8,7 +8,7 @@ public class NPCController : MonoBehaviour
     public List<Transform> waypoints = new List<Transform>();
     private Transform targetWayPoint;
     private int targetWayPointIndex = 0;
-    private float minDistance = 0.1f;
+    private float minDistance = 0.5f;
     private float lastWayPointIndex;
     [SerializeField]
     private float speed = 3.0f;
