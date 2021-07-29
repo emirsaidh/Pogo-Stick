@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class PogoStickController : MonoBehaviour
 {
     private Rigidbody rb;
+    private Animator animator;
     
     private bool isGrounded = false;
     private bool isHolding = false;
@@ -17,12 +18,17 @@ public class PogoStickController : MonoBehaviour
     public float jumpForce = 350f;
     public float speed = 5f;
     public float turnSpeed = 10f;
-    public float slingForce = 50f;
+    public float slingUpForce = 50f;
+    public float slingForwardForce = 350f;
 
     public GameObject spring;
     public GameObject upperBody;
     public GameObject playerCamera;
     public GameObject mainSpring;
+
+    private int score = 0;
+
+    private String name = null;
     
     public Stack<GameObject> pogos;
     
@@ -30,10 +36,13 @@ public class PogoStickController : MonoBehaviour
     private float timer = 0f;
 
     private int stackNo;
+    private bool isTouched = false;
+    
     private void Start()
     {
         pogos = new Stack<GameObject>();
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -42,6 +51,7 @@ public class PogoStickController : MonoBehaviour
 
         if (Input.GetButton("Jump") && springCount > 1)
         {
+            animator.enabled = false;
             isHolding = true;
             if (isGrounded)
             {
@@ -53,6 +63,8 @@ public class PogoStickController : MonoBehaviour
 
         if (Input.GetButtonUp("Jump"))
         {
+            animator.enabled = false;
+            
             if (springCount > 1 && isGrounded)
             {
                 stackNo = Math.Min((int) timer, springCount);
@@ -61,16 +73,22 @@ public class PogoStickController : MonoBehaviour
                     stackNo = 1;
                 }
                 
-                rb.AddForce(stackNo * slingForce * (Vector3.forward+Vector3.up+Vector3.forward).normalized);
+                rb.AddForce(stackNo * slingUpForce * Vector3.up);
+                rb.AddForce(stackNo * slingForwardForce * Vector3.forward, ForceMode.Acceleration);
                 DestroyStack(stackNo);
             }
 
             timer = 0f;
             isHolding = false;
             speed = 5f;
-
-            
         }
+
+
+        if (springCount == 1)
+        {
+            spring = mainSpring;
+        }
+        
     }
 
     private void FixedUpdate()
@@ -84,21 +102,47 @@ public class PogoStickController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Platform"))
         {
             isGrounded = true;
+            animator.enabled = false;
+            animator.enabled = true;
+            animator.Play(0);
+            
         }
         
         if (other.gameObject.CompareTag("Water"))
         {
             SceneManager.LoadScene(0);
         }
+
+        if (other.gameObject.CompareTag("Platform"))
+        {
+            isTouched = true;
+            if (name != other.gameObject.name)
+            {
+                isTouched = false;
+            }
+                
+            name = other.gameObject.name;
+
+            if (!isTouched)
+            {
+                StartCoroutine(MultiplyPogo(4));
+            }
+        }
+        
+        if (other.gameObject.name == "EndgameGround")
+        {
+            StartCoroutine(EndGame());
+        }
+        
     }
     
 
     private void OnCollisionExit(Collision other)
     {
-        if (other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Platform"))
         {
             isGrounded = false;
         }
@@ -121,6 +165,25 @@ public class PogoStickController : MonoBehaviour
             Destroy(other.gameObject);
             StartCoroutine(MultiplyPogo(1));
         }
+        
+        switch (other.gameObject.name)
+        {
+            case "Line1":
+                score = 100;
+                break;
+            case "Line2":
+                score = 200;
+                break;
+            case "Line3":
+                score = 300;
+                break;
+            default:
+                score = 0;
+                break;
+        }
+
+        
+
     }
     
     
@@ -156,6 +219,17 @@ public class PogoStickController : MonoBehaviour
         }
     }
 
+    IEnumerator EndGame()
+    {
+        Debug.Log("Your score is:" + score);
+        rb.velocity = Vector3.zero;
+        speed = 0f;
+
+
+        yield return new WaitForSeconds(1.5f);
+        SceneManager.LoadScene(0);
+    }
+
     private void DestroyStack(int destNo)
     {
         Debug.Log(destNo);
@@ -168,7 +242,7 @@ public class PogoStickController : MonoBehaviour
                 
                 playerCamera.transform.localPosition = new Vector3(playerCamera.transform.localPosition.x , playerCamera.transform.localPosition.y - 0.2f, playerCamera.transform.localPosition.z +  0.2f);
 
-                if (pogos.Count > 1)
+                if (pogos.Count > 0)
                 {
                     spring = pogos.Peek();
                 }
@@ -184,6 +258,7 @@ public class PogoStickController : MonoBehaviour
         {
             spring = mainSpring;
         }
+        
         springCount -= destNo;
     }
 
