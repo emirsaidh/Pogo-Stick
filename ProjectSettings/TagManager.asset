@@ -8,6 +8,8 @@ TagManager:
   - Pogo
   - Boost
   - Water
+  - Stack
+  - Platform
   layers:
   - Default
   - TransparentFX
