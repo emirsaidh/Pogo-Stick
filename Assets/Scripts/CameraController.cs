@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour
 {
     public GameObject player;
 
-    public PogoStickController pso;
+    public PlayerController pso;
 
     private void Update()
     {

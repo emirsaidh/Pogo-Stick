@@ -1,44 +1,46 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class NPCController : MonoBehaviour
 {
     public List<Transform> waypoints = new List<Transform>();
     private Transform targetWayPoint;
     private int targetWayPointIndex = 0;
+    private Rigidbody rb;
     private float minDistance = 0.5f;
+    private bool isGrounded = false;
     private float lastWayPointIndex;
     [SerializeField]
     private float speed = 3.0f;
     [SerializeField]
-    private float rotationSpeed = 2.0f;
+    private float jumpForce = 100.0f;
 
-    // 
-    // private Rigidbody rb;   
-    // private bool isGrounded = false;   
-    // public float jumpForce = 350f;
-    // public float turnSpeed = 10f;
-    // public float slingForce = 50f;
-    // public GameObject spring;
-    // public GameObject upperBody;
-    // public GameObject mainSpring;   
-    // public Stack<GameObject> pogos;    
-    // public int springCount = 1;
-    // private float timer = 0f;
-    // private int stackNo;
+    public GameObject spring;
+    public GameObject upperBody;
+    public GameObject mainSpring;
+    public Stack<GameObject> pogos;
+    //private String name = null;
+    public int springCount = 1;
+    private float timer = 0f;
+    private int stackNo;
+
 
     void Start()
     {
         lastWayPointIndex = waypoints.Count - 1;
         targetWayPoint = waypoints[targetWayPointIndex];
-
-        // pogos = new Stack<GameObject>();
-        // rb = GetComponent<Rigidbody>();
-
+        pogos = new Stack<GameObject>();
+        rb = GetComponent<Rigidbody>();
+        //animator = GetComponent<Animator>();
     }
 
+    
     void Update()
     {
         float movementStep = speed * Time.deltaTime;
@@ -54,37 +56,100 @@ public class NPCController : MonoBehaviour
 
         transform.position = Vector3.MoveTowards(transform.position, targetWayPoint.position, movementStep);
 
-        // 
-        // if (isGrounded)
-        // {
-        //     rb.AddForce(Vector3.up * jumpForce);
-        // }
         
     }
 
-    //
-    // private void OnCollisionEnter(Collision other)
-    // {
-    //     if (other.gameObject.CompareTag("Ground"))
-    //     {
-    //         Debug.Log("Collision Detected");
-    //         isGrounded = true;
-    //     }
+    private void FixedUpdate(){
+        if (isGrounded)
+        {
+            rb.AddForce(Vector3.up * jumpForce);
+        }
+    }
+
+    
+    
+
+
+
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Platform"))
+        {
+            isGrounded = true;           
+        }
         
-    //     if (other.gameObject.CompareTag("Water"))
-    //     {
-    //         SceneManager.LoadScene(0);
-    //     }
-    // }
+    }
 
-    // private void OnCollisionExit(Collision other)
-    // {
-    //     if (other.gameObject.CompareTag("Ground"))
-    //     {
-    //         isGrounded = false;
-    //     }
-    // }
+    private void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Platform"))
+        {
+            isGrounded = false;
+        }
+    }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Boost"))
+        {
+            StartCoroutine(SpeedUp());
+        }
+
+        if (other.gameObject.CompareTag("Pogo"))
+        {
+            StartCoroutine(MultiplyPogo(Int16.Parse(other.gameObject.GetComponentInChildren<Text>().text)));
+        }
+
+        if (other.gameObject.CompareTag("Stack"))
+        {
+            Destroy(other.gameObject);
+            StartCoroutine(MultiplyPogo(1));
+        }
+
+    }
+
+    IEnumerator SpeedUp() 
+    {
+        speed *= 1.25f;
+
+        yield return new WaitForSeconds(3f);
+
+        speed /= 1.25f;
+    }
+
+    IEnumerator MultiplyPogo(int add)
+    {   
+        springCount += add;
+
+        for(int i=0; i<add; i++)
+        {
+            GameObject temp = Instantiate(spring,
+            new Vector3(spring.transform.position.x, spring.transform.position.y + 0.1f, spring.transform.position.z), spring.transform.rotation);
+            pogos.Push(temp);
+
+            upperBody.transform.position = new Vector3(upperBody.transform.position.x,
+                upperBody.transform.position.y + 0.1f, upperBody.transform.position.z);
+        
+            temp.transform.parent = gameObject.transform;
+            spring = temp;
+            
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     void CheckDistanceToWaypoint(float currentDistance){
         if(currentDistance <= minDistance){
             targetWayPointIndex++;
@@ -98,4 +163,6 @@ public class NPCController : MonoBehaviour
         }
         targetWayPoint = waypoints[targetWayPointIndex];
     }
+
+
 }
