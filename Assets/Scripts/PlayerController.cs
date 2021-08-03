@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
 
         xAngle = 0.0f;
-        this.transform.rotation = Quaternion.Euler(0.0f, xAngle, 0.0f);
+        //this.transform.rotation = Quaternion.Euler(0.0f, xAngle, 0.0f);
     }
 
     private void Update()
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         }
     }   
 
-        //transform.Rotate(Input.GetAxis("Horizontal") * Vector3.up * Time.deltaTime * turnSpeed);              
+        transform.Rotate(Input.GetAxis("Horizontal") * Vector3.up * Time.deltaTime * turnSpeed);              
 
         
 
