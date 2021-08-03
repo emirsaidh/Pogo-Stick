@@ -162,8 +162,13 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if (other.gameObject.name == "EndgameGround")
+        if (other.gameObject.CompareTag("Finish"))
         {
+            score = Int16.Parse(other.gameObject.GetComponentInChildren<Text>().text);
+            Debug.Log(score);
+            Instantiate(confetti, new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z + 1.0f), transform.rotation);
+            Instantiate(confetti, new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z + 1.0f), transform.rotation);
+            Instantiate(confetti, new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z + 1.0f), transform.rotation);
             StartCoroutine(EndGame());
         }
         
@@ -194,56 +199,6 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(other.gameObject);
             StartCoroutine(MultiplyPogo(1));
-        }
-        
-        switch (other.gameObject.name)
-        {
-            case "Line1":
-                score = 100;
-                Instantiate(confetti);
-                break;
-            case "Line2":
-                score = 200;
-                Instantiate(confetti);
-                break;
-            case "Line3":
-                score = 300;
-                Instantiate(confetti);
-                break;
-            case "Line4":
-                score = 300;
-                Instantiate(confetti);
-                break;
-            case "Line5":
-                score = 300;
-                Instantiate(confetti);
-                break;
-            case "Line6":
-                score = 300;
-                Instantiate(confetti);
-                break;
-            case "Line7":
-                score = 300;
-                Instantiate(confetti);
-                break;
-            case "Line8":
-                score = 300;
-                Instantiate(confetti);
-                break;
-            case "Line9":
-                score = 300;
-                Instantiate(confetti);
-                break;
-            case "Line10":
-                score = 300;
-                Instantiate(confetti);
-                break;
-            
-            
-            
-            default:
-                score = 0;
-                break;
         }
 
         
@@ -285,11 +240,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator EndGame()
     {
-        Debug.Log("Your score is:" + score);
         rb.velocity = Vector3.zero;
         speed = 0f;
-
-
         yield return new WaitForSeconds(1.5f);
         SceneManager.LoadScene(0);
     }

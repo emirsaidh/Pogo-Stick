@@ -25,7 +25,7 @@ public class NPCController : MonoBehaviour
     public GameObject upperBody;
     public GameObject mainSpring;
     public Stack<GameObject> pogos;
-    //private String name = null;
+    public GameObject waypointsParent;
     public int springCount = 1;
     private float timer = 0f;
     private int stackNo;
@@ -55,7 +55,9 @@ public class NPCController : MonoBehaviour
         CheckDistanceToWaypoint(distance);
 
         transform.position = Vector3.MoveTowards(transform.position, targetWayPoint.position, movementStep);
-
+        
+        waypointsParent.transform.position = new Vector3(waypointsParent.transform.position.x, transform.position.y - 1.0f, waypointsParent.transform.position.z);
+        
         
     }
 
@@ -63,6 +65,7 @@ public class NPCController : MonoBehaviour
         if (isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce);
+            //waypointsParent.transform.position = new Vector3(waypointsParent.transform.position.x, transform.position.y, waypointsParent.transform.position.z);
         }
     }
 

@@ -2,7 +2,7 @@ fileFormatVersion: 2
 guid: 0a539ec68f3705f4fbefaa4439cd05c3
 ModelImporter:
   serializedVersion: 20200
-  internalIDToNameTable:
+  InternalIDToNameTable:
   - first:
       74: -5767448409308129510
     second: FastRun
@@ -24,8 +24,8 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    importAnimatedCustomProperties: 0
-    importConstraints: 0
+    ImportAnimatedCustomProperties: 0
+    ImportConstraints: 0
     animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -63,7 +63,7 @@ ModelImporter:
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
-    isReadable: 0
+    IsReadable: 0
   meshes:
     lODScreenPercentages: []
     globalScale: 0.5
@@ -71,10 +71,10 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
-    importVisibility: 1
-    importBlendShapes: 1
-    importCameras: 1
-    importLights: 1
+    ImportVisibility: 1
+    ImportBlendShapes: 1
+    ImportCameras: 1
+    ImportLights: 1
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -105,7 +105,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 1
+  ImportAnimation: 1
   humanDescription:
     serializedVersion: 3
     human:
