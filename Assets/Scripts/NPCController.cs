@@ -81,6 +81,12 @@ public class NPCController : MonoBehaviour
         {
             isGrounded = true;           
         }
+
+        if (other.gameObject.CompareTag("Finish"))
+        {
+            speed = 0;
+            isGrounded = false;
+        }
         
     }
 

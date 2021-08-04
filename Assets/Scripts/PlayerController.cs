@@ -11,10 +11,10 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody rb;
     private Animator animator;
-    
+
     private bool isGrounded = false;
     private bool isHolding = false;
-    
+
     public float jumpForce = 350f;
     public float speed = 5f;
     public float turnSpeed = 10f;
@@ -30,9 +30,9 @@ public class PlayerController : MonoBehaviour
     private int score = 0;
 
     private String name = null;
-    
+
     public Stack<GameObject> pogos;
-    
+
     public int springCount = 1;
     private float timer = 0f;
 
@@ -43,8 +43,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 secondpoint;
     private float xAngle; //angle for axes x for rotation
     private float xAngTemp = 0.0f; //temp variable for angle
+    private int currentLevel = 0;
 
-    
+
     private void Start()
     {
         pogos = new Stack<GameObject>();
@@ -57,26 +58,29 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if(Input.touchCount > 0) {
-        //Touch began, save position
-        if(Input.GetTouch(0).phase == TouchPhase.Began) {
-            firstpoint = Input.GetTouch(0).position;
-            xAngTemp = xAngle;
-            //yAngTemp = yAngle;
+        if (Input.touchCount > 0)
+        {
+            //Touch began, save position
+            if (Input.GetTouch(0).phase == TouchPhase.Began)
+            {
+                firstpoint = Input.GetTouch(0).position;
+                xAngTemp = xAngle;
+                //yAngTemp = yAngle;
+            }
+            //Move finger by screen
+            if (Input.GetTouch(0).phase == TouchPhase.Moved)
+            {
+                secondpoint = Input.GetTouch(0).position;
+                //Mainly, about rotate camera. For example, for Screen.width rotate on 180 degree
+                xAngle = xAngTemp + (secondpoint.x - firstpoint.x) * 180.0f / Screen.width;
+                //Rotate camera
+                this.transform.rotation = Quaternion.Euler(0.0f, xAngle, 0.0f);
+            }
         }
-        //Move finger by screen
-        if(Input.GetTouch(0).phase==TouchPhase.Moved) {
-            secondpoint = Input.GetTouch(0).position;
-            //Mainly, about rotate camera. For example, for Screen.width rotate on 180 degree
-            xAngle = xAngTemp + (secondpoint.x - firstpoint.x) * 180.0f / Screen.width;
-            //Rotate camera
-            this.transform.rotation = Quaternion.Euler(0.0f, xAngle, 0.0f);
-        }
-    }   
 
-        transform.Rotate(Input.GetAxis("Horizontal") * Vector3.up * Time.deltaTime * turnSpeed);              
+        transform.Rotate(Input.GetAxis("Horizontal") * Vector3.up * Time.deltaTime * turnSpeed);
 
-        
+
 
         if (Input.GetButton("Jump") || Input.GetMouseButton(0) && springCount > 1)
         {
@@ -93,15 +97,15 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonUp("Jump") || Input.GetMouseButtonUp(0))
         {
             animator.enabled = false;
-            
+
             if (springCount > 1 && isGrounded)
             {
-                stackNo = Math.Min((int) timer, springCount);
+                stackNo = Math.Min((int)timer, springCount);
                 if (stackNo == 0 && isGrounded)
                 {
                     stackNo = 1;
                 }
-                
+
                 rb.AddForce(stackNo * slingUpForce * Vector3.up);
                 rb.AddForce(stackNo * slingForwardForce * Vector3.forward, ForceMode.Acceleration);
                 DestroyStack(stackNo);
@@ -118,7 +122,7 @@ public class PlayerController : MonoBehaviour
         {
             spring = mainSpring;
         }
-        
+
     }
 
     private void FixedUpdate()
@@ -138,9 +142,9 @@ public class PlayerController : MonoBehaviour
             animator.enabled = false;
             animator.enabled = true;
             animator.Play(0);
-            
+
         }
-        
+
         if (other.gameObject.CompareTag("Water"))
         {
             SceneManager.LoadScene(0);
@@ -153,7 +157,7 @@ public class PlayerController : MonoBehaviour
             {
                 isTouched = false;
             }
-                
+
             name = other.gameObject.name;
 
             if (!isTouched)
@@ -161,19 +165,20 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(MultiplyPogo(4));
             }
         }
-        
+
         if (other.gameObject.CompareTag("Finish"))
         {
             score = Int16.Parse(other.gameObject.GetComponentInChildren<Text>().text);
             Debug.Log(score);
+            currentLevel++;
             Instantiate(confetti, new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z + 1.0f), transform.rotation);
             Instantiate(confetti, new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z + 1.0f), transform.rotation);
             Instantiate(confetti, new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z + 1.0f), transform.rotation);
             StartCoroutine(EndGame());
         }
-        
+
     }
-    
+
 
     private void OnCollisionExit(Collision other)
     {
@@ -182,7 +187,7 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
         }
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Boost"))
@@ -201,12 +206,12 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(MultiplyPogo(1));
         }
 
-        
+
 
     }
-    
-    
-    IEnumerator SpeedUp() 
+
+
+    IEnumerator SpeedUp()
     {
         speed *= 2f;
 
@@ -216,10 +221,10 @@ public class PlayerController : MonoBehaviour
     }
 
     IEnumerator MultiplyPogo(int add)
-    {   
+    {
         springCount += add;
 
-        for(int i=0; i<add; i++)
+        for (int i = 0; i < add; i++)
         {
             GameObject temp = Instantiate(spring,
             new Vector3(spring.transform.position.x, spring.transform.position.y + 0.1f, spring.transform.position.z), spring.transform.rotation);
@@ -227,13 +232,13 @@ public class PlayerController : MonoBehaviour
 
             upperBody.transform.position = new Vector3(upperBody.transform.position.x,
                 upperBody.transform.position.y + 0.1f, upperBody.transform.position.z);
-        
+
             temp.transform.parent = gameObject.transform;
             spring = temp;
 
-            
-            playerCamera.transform.localPosition = new Vector3(playerCamera.transform.localPosition.x , playerCamera.transform.localPosition.y + 0.2f, playerCamera.transform.localPosition.z - 0.2f);
-            
+
+            playerCamera.transform.localPosition = new Vector3(playerCamera.transform.localPosition.x, playerCamera.transform.localPosition.y + 0.2f, playerCamera.transform.localPosition.z - 0.2f);
+
             yield return new WaitForSeconds(0.1f);
         }
     }
@@ -243,7 +248,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector3.zero;
         speed = 0f;
         yield return new WaitForSeconds(1.5f);
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(currentLevel);
     }
 
     private void DestroyStack(int destNo)
@@ -255,8 +260,8 @@ public class PlayerController : MonoBehaviour
             {
                 Destroy(pogos.Pop());
                 upperBody.transform.position = new Vector3(upperBody.transform.position.x, upperBody.transform.position.y - 0.1f, upperBody.transform.position.z);
-                
-                playerCamera.transform.localPosition = new Vector3(playerCamera.transform.localPosition.x , playerCamera.transform.localPosition.y - 0.2f, playerCamera.transform.localPosition.z +  0.2f);
+
+                playerCamera.transform.localPosition = new Vector3(playerCamera.transform.localPosition.x, playerCamera.transform.localPosition.y - 0.2f, playerCamera.transform.localPosition.z + 0.2f);
 
                 if (pogos.Count > 0)
                 {
@@ -267,14 +272,14 @@ public class PlayerController : MonoBehaviour
 
         if (destNo != 1)
         {
-            playerCamera.transform.localPosition = new Vector3(playerCamera.transform.localPosition.x , playerCamera.transform.localPosition.y - 0.2f, playerCamera.transform.localPosition.z +  0.2f);
+            playerCamera.transform.localPosition = new Vector3(playerCamera.transform.localPosition.x, playerCamera.transform.localPosition.y - 0.2f, playerCamera.transform.localPosition.z + 0.2f);
         }
-        
+
         if (pogos.Count == 0)
         {
             spring = mainSpring;
         }
-        
+
         springCount -= destNo;
     }
 
