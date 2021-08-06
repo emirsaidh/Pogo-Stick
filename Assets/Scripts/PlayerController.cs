@@ -45,6 +45,14 @@ public class PlayerController : MonoBehaviour
     private float xAngTemp = 0.0f; //temp variable for angle
     private int currentLevel = 0;
     private Boolean doubleTouch;
+    
+    
+    bool right;
+    bool left;
+    [SerializeField] float min = -1f;
+    [SerializeField] float max = 1f;
+
+    public float speed_touch = 2f;
 
 
     private void Start()
@@ -59,7 +67,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.touchCount > 0)
+        /*if (Input.touchCount > 0)
         {
             //Touch began, save position
             if (Input.GetTouch(0).phase == TouchPhase.Began)
@@ -76,14 +84,18 @@ public class PlayerController : MonoBehaviour
                 //Rotate camera
                 this.transform.rotation = Quaternion.Euler(0.0f, xAngle, 0.0f);
             }
-        }
+        }*/
+        
+        // TOUCH FUNCTION
 
+        TouchMovement();
+        
         transform.Rotate(Input.GetAxis("Horizontal") * Vector3.up * Time.deltaTime * turnSpeed);
 
         doubleTouch = IsDoubleTap();
 
         //Input.GetButton("Jump") || 
-        if (doubleTouch && springCount > 1)
+        /*if (doubleTouch && springCount > 1)
         {
             animator.enabled = false;
             isHolding = true;
@@ -93,8 +105,17 @@ public class PlayerController : MonoBehaviour
                 rb.velocity = Vector3.zero;
                 speed = 0f;
             }
-        }
+        }*/
 
+
+        /*if (Input.GetButton("Jump") && isGrounded)
+        {
+                animator.SetBool("isHolding", true);
+                timer += 4f * Time.deltaTime;
+                rb.velocity = Vector3.zero;
+                speed = 0f;
+        }
+        
         if (Input.GetButtonUp("Jump") || Input.GetMouseButtonUp(0))
         {
             animator.enabled = false;
@@ -113,11 +134,11 @@ public class PlayerController : MonoBehaviour
             }
 
             timer = 0f;
+            animator.SetBool("isHolding", false);
             isHolding = false;
             speed = 5f;
-        }
-
-
+        }*/
+        
 
         if (springCount == 1)
         {
@@ -301,4 +322,73 @@ public class PlayerController : MonoBehaviour
         return result;
     }
 
+    private void TouchMovement()
+    {
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+        {
+
+            Touch finger = Input.GetTouch(0);
+
+            // RIGHT-LEFT MOVEMENT STARTED
+            
+            Vector3 go_right = new Vector3(max,0, 0);
+            Vector3 go_left = new Vector3(min,0 ,0);
+            
+            if (finger.deltaPosition.x > 1.0f)
+            {
+                right = true;
+                left = false;
+            }
+
+            if (finger.deltaPosition.x < -1.0f)
+            {
+                right = false;
+                left = true;
+            }
+
+            transform.Rotate(finger.deltaPosition.x * Vector3.up * Time.deltaTime * turnSpeed);
+
+            // RIGHT-LEFT MOVEMENT ENDED
+
+
+        }
+    }
+
+    public void ReadySwing()
+    {
+        if (springCount > 1)
+        {
+            animator.enabled = false;
+            isHolding = true;
+            if (isGrounded)
+            {
+                timer += 4f * Time.deltaTime;
+                rb.velocity = Vector3.zero;
+                speed = 0f;
+            }
+        }
+    }
+
+    public void StopSwing()
+    {
+        animator.enabled = false;
+
+        if (springCount > 1 && isGrounded)
+        {
+            stackNo = Math.Min((int)timer, springCount);
+            if (stackNo == 0 && isGrounded)
+            {
+                stackNo = 1;
+            }
+
+            rb.AddForce(stackNo * slingUpForce * Vector3.up);
+            rb.AddForce(stackNo * slingForwardForce * Vector3.forward, ForceMode.Acceleration);
+            DestroyStack(stackNo);
+        }
+
+        timer = 0f;
+        animator.SetBool("isHolding", false);
+        isHolding = false;
+        speed = 5f;
+    }
 }
