@@ -47,6 +47,8 @@ public class PlayerController : MonoBehaviour
     private int currentLevel = 0;
     private Boolean doubleTouch;
 
+    public Transform upperTransform;
+
 
     bool right;
     bool left;
@@ -370,6 +372,7 @@ public class PlayerController : MonoBehaviour
             isHolding = true;
             if (isGrounded)
             {
+                upperTransform.rotation = Quaternion.Slerp(upperTransform.rotation, Quaternion.Euler(Mathf.Clamp(upperTransform.rotation.x - ((springCount - 1) * 5f), -50f, 0f), upperTransform.rotation.y, upperTransform.rotation.z), 2 * Time.deltaTime);
                 timer += 4f * Time.deltaTime;
                 rb.velocity = Vector3.zero;
                 speed = 0f;
@@ -380,6 +383,7 @@ public class PlayerController : MonoBehaviour
     public void StopSwing()
     {
         animator.enabled = false;
+        upperTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
 
         if (springCount > 1 && isGrounded)
         {
