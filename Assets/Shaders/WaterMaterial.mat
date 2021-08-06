@@ -37,6 +37,6 @@ Material:
     - RppleDensity: 50
     - WaveSpeed: 0.05
     m_Colors:
-    - BaseColor: {r: 1, g: 0.09262034, b: 0, a: 0}
+    - BaseColor: {r: 0, g: 0.6330502, b: 1, a: 0}
     - RippleColor: {r: 0.9339623, g: 0.19824673, b: 0.19824673, a: 0}
   m_BuildTextureStacks: []

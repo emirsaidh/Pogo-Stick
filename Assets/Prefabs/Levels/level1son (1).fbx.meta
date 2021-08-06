@@ -1,23 +1,8 @@
 fileFormatVersion: 2
-guid: 9a6f72726fbc31f428dad2df41d6da61
+guid: ec7ac631a4caae5698da137cc10af601
 ModelImporter:
   serializedVersion: 20200
-  InternalIDToNameTable:
-  - first:
-      74: -887982601649841707
-    second: metarig|metarigAction
-  - first:
-      74: 7101275619085804311
-    second: "metarig|z\u0131pz\u0131pust.001|z\u0131pz\u0131pust.001|z\u0131pz\u0131pust.001Action|z\u0131pz\u0131pu"
-  - first:
-      74: -5717661459827279415
-    second: "metarig|z\u0131pz\u0131pust.001|z\u0131pz\u0131pust.001|z\u0131pz\u0131pustAction|z\u0131pz\u0131pust.0"
-  - first:
-      74: -5258463747579215255
-    second: "metarig|z\u0131pz\u0131pust|z\u0131pz\u0131pust|z\u0131pz\u0131pust.001Action|z\u0131pz\u0131pust|z\u0131pz"
-  - first:
-      74: 8908042681453251424
-    second: "metarig|z\u0131pz\u0131pust|z\u0131pz\u0131pust|z\u0131pz\u0131pustAction|z\u0131pz\u0131pust|z\u0131pz\u0131pu"
+  InternalIDToNameTable: []
   externalObjects: {}
   materials:
     materialImportMode: 2
