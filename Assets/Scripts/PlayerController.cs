@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public GameObject mainSpring;
     public GameObject confetti;
 
+
     private int score = 0;
 
     private String name = null;
@@ -45,8 +46,8 @@ public class PlayerController : MonoBehaviour
     private float xAngTemp = 0.0f; //temp variable for angle
     private int currentLevel = 0;
     private Boolean doubleTouch;
-    
-    
+
+
     bool right;
     bool left;
     [SerializeField] float min = -1f;
@@ -85,20 +86,27 @@ public class PlayerController : MonoBehaviour
                 this.transform.rotation = Quaternion.Euler(0.0f, xAngle, 0.0f);
             }
         }*/
-        
+
         // TOUCH FUNCTION
 
         TouchMovement();
-        
+
         transform.Rotate(Input.GetAxis("Horizontal") * Vector3.up * Time.deltaTime * turnSpeed);
 
-        doubleTouch = IsDoubleTap();
+
 
         //Input.GetButton("Jump") || 
         /*if (doubleTouch && springCount > 1)
         {
             animator.enabled = false;
             isHolding = true;
+            if (!isGrounded)
+            {
+                springY = spring.transform.position.y;
+                float heightDiff = springY - 1.5f;
+                transform.position = new Vector3(transform.position.x, transform.position.y - heightDiff, transform.position.z);
+                isGrounded = true;
+            }
             if (isGrounded)
             {
                 timer += 4f * Time.deltaTime;
@@ -138,7 +146,7 @@ public class PlayerController : MonoBehaviour
             isHolding = false;
             speed = 5f;
         }*/
-        
+
 
         if (springCount == 1)
         {
@@ -330,10 +338,10 @@ public class PlayerController : MonoBehaviour
             Touch finger = Input.GetTouch(0);
 
             // RIGHT-LEFT MOVEMENT STARTED
-            
-            Vector3 go_right = new Vector3(max,0, 0);
-            Vector3 go_left = new Vector3(min,0 ,0);
-            
+
+            Vector3 go_right = new Vector3(max, 0, 0);
+            Vector3 go_left = new Vector3(min, 0, 0);
+
             if (finger.deltaPosition.x > 1.0f)
             {
                 right = true;

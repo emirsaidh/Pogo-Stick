@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject canvas;
+    [SerializeField]
+    private GameObject swingCanvas;
 
 
     void Start()
@@ -28,6 +30,7 @@ public class GameManager : MonoBehaviour
     public void CloseCanvas()
     {
         canvas.SetActive(false);
+        swingCanvas.SetActive(true);
     }
 
     public void PauseGame()
