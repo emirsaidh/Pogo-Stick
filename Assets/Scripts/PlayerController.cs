@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private float xAngle; //angle for axes x for rotation
     private float xAngTemp = 0.0f; //temp variable for angle
     private int currentLevel = 0;
+    private Boolean doubleTouch;
 
 
     private void Start()
@@ -65,7 +66,6 @@ public class PlayerController : MonoBehaviour
             {
                 firstpoint = Input.GetTouch(0).position;
                 xAngTemp = xAngle;
-                //yAngTemp = yAngle;
             }
             //Move finger by screen
             if (Input.GetTouch(0).phase == TouchPhase.Moved)
@@ -80,9 +80,10 @@ public class PlayerController : MonoBehaviour
 
         transform.Rotate(Input.GetAxis("Horizontal") * Vector3.up * Time.deltaTime * turnSpeed);
 
+        doubleTouch = IsDoubleTap();
 
-
-        if (Input.GetButton("Jump") || Input.GetMouseButton(0) && springCount > 1)
+        //Input.GetButton("Jump") || 
+        if (doubleTouch && springCount > 1)
         {
             animator.enabled = false;
             isHolding = true;
@@ -281,6 +282,23 @@ public class PlayerController : MonoBehaviour
         }
 
         springCount -= destNo;
+    }
+
+    public static bool IsDoubleTap()
+    {
+        bool result = false;
+        float MaxTimeWait = 1;
+        float VariancePosition = 1;
+
+        if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            float DeltaTime = Input.GetTouch(0).deltaTime;
+            float DeltaPositionLenght = Input.GetTouch(0).deltaPosition.magnitude;
+
+            if (DeltaTime > 0 && DeltaTime < MaxTimeWait && DeltaPositionLenght < VariancePosition)
+                result = true;
+        }
+        return result;
     }
 
 }
