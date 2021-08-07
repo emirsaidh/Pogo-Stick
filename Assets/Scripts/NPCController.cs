@@ -40,28 +40,29 @@ public class NPCController : MonoBehaviour
         //animator = GetComponent<Animator>();
     }
 
-    
+
     void Update()
     {
         float movementStep = speed * Time.deltaTime;
         float rotationStep = speed * Time.deltaTime;
-        
+
         Vector3 directionToTarget = targetWayPoint.position - transform.position;
         Quaternion rotationToTarget = Quaternion.LookRotation(directionToTarget);
 
         transform.rotation = Quaternion.Slerp(transform.rotation, rotationToTarget, rotationStep);
-        
-        float distance = Vector3.Distance(transform.position, targetWayPoint.position);             
+
+        float distance = Vector3.Distance(transform.position, targetWayPoint.position);
         CheckDistanceToWaypoint(distance);
 
         transform.position = Vector3.MoveTowards(transform.position, targetWayPoint.position, movementStep);
-        
+
         waypointsParent.transform.position = new Vector3(waypointsParent.transform.position.x, transform.position.y - 1.0f, waypointsParent.transform.position.z);
-        
-        
+
+
     }
 
-    private void FixedUpdate(){
+    private void FixedUpdate()
+    {
         if (isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce);
@@ -69,8 +70,8 @@ public class NPCController : MonoBehaviour
         }
     }
 
-    
-    
+
+
 
 
 
@@ -79,15 +80,17 @@ public class NPCController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Platform"))
         {
-            isGrounded = true;           
+            isGrounded = true;
         }
 
         if (other.gameObject.CompareTag("Finish"))
         {
+            Debug.Log("Collider works");
             speed = 0;
+            jumpForce = 0;
             isGrounded = false;
         }
-        
+
     }
 
     private void OnCollisionExit(Collision other)
@@ -118,7 +121,7 @@ public class NPCController : MonoBehaviour
 
     }
 
-    IEnumerator SpeedUp() 
+    IEnumerator SpeedUp()
     {
         speed *= 1.25f;
 
@@ -128,10 +131,10 @@ public class NPCController : MonoBehaviour
     }
 
     IEnumerator MultiplyPogo(int add)
-    {   
+    {
         springCount += add;
 
-        for(int i=0; i<add; i++)
+        for (int i = 0; i < add; i++)
         {
             GameObject temp = Instantiate(spring,
             new Vector3(spring.transform.position.x, spring.transform.position.y + 0.1f, spring.transform.position.z), spring.transform.rotation);
@@ -139,35 +142,39 @@ public class NPCController : MonoBehaviour
 
             upperBody.transform.position = new Vector3(upperBody.transform.position.x,
                 upperBody.transform.position.y + 0.1f, upperBody.transform.position.z);
-        
+
             temp.transform.parent = gameObject.transform;
             spring = temp;
-            
+
             yield return new WaitForSeconds(0.1f);
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    void CheckDistanceToWaypoint(float currentDistance){
-        if(currentDistance <= minDistance){
+
+
+
+
+
+
+
+
+
+
+
+
+
+    void CheckDistanceToWaypoint(float currentDistance)
+    {
+        if (currentDistance <= minDistance)
+        {
             targetWayPointIndex++;
             UpdateTargetWayPoint();
         }
     }
 
-    void UpdateTargetWayPoint(){
-        if(targetWayPointIndex > lastWayPointIndex){
+    void UpdateTargetWayPoint()
+    {
+        if (targetWayPointIndex > lastWayPointIndex)
+        {
             targetWayPointIndex = 0;
         }
         targetWayPoint = waypoints[targetWayPointIndex];
