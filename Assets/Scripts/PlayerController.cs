@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public GameObject playerCamera;
     public GameObject mainSpring;
     public GameObject confetti;
+    public TextMeshProUGUI coinsEarned;
 
 
     private int score = 0;
@@ -46,6 +48,8 @@ public class PlayerController : MonoBehaviour
     private float xAngTemp = 0.0f; //temp variable for angle
     private int currentLevel = 0;
     private Boolean doubleTouch;
+    [SerializeField]
+    private GameObject levelEndCanvas;
 
     public Transform upperTransform;
 
@@ -179,7 +183,7 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.CompareTag("Water"))
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(currentLevel);
         }
 
         if (other.gameObject.CompareTag("Platform"))
@@ -200,13 +204,17 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.CompareTag("Finish"))
         {
+            rb.velocity = Vector3.zero;
+            speed = 0f;
             score = Int16.Parse(other.gameObject.GetComponentInChildren<Text>().text);
             Debug.Log(score);
+            coinsEarned.text = score.ToString();
             currentLevel++;
             Instantiate(confetti, new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z + 1.0f), transform.rotation);
             Instantiate(confetti, new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z + 1.0f), transform.rotation);
             Instantiate(confetti, new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z + 1.0f), transform.rotation);
-            StartCoroutine(EndGame());
+            levelEndCanvas.SetActive(true);
+
         }
 
     }
@@ -372,7 +380,7 @@ public class PlayerController : MonoBehaviour
             isHolding = true;
             if (isGrounded)
             {
-                upperTransform.localRotation = Quaternion.Slerp(upperTransform.localRotation, Quaternion.Euler(Mathf.Clamp(upperTransform.localRotation.x - ((springCount - 1) * 5f), -50f, 0f),upperTransform.localRotation.y, upperTransform.localRotation.z), 2 * Time.deltaTime);
+                upperTransform.localRotation = Quaternion.Slerp(upperTransform.localRotation, Quaternion.Euler(Mathf.Clamp(upperTransform.localRotation.x - ((springCount - 1) * 5f), -50f, 0f), upperTransform.localRotation.y, upperTransform.localRotation.z), 2 * Time.deltaTime);
                 timer += 4f * Time.deltaTime;
                 rb.velocity = Vector3.zero;
                 speed = 0f;
@@ -402,5 +410,10 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isHolding", false);
         isHolding = false;
         speed = 5f;
+    }
+
+    public void LoadNextLevel()
+    {
+        StartCoroutine(EndGame());
     }
 }
